@@ -82,6 +82,19 @@ fastify.post('/produtos', postProdutoOpts, async (request, reply) => {
     }
 });
 
+fastify.put('/produtos/:id', async (request,reply) => {
+    const id = request.params.id;
+    const { name, description, price, category, pictureUrl } = request.body;
+    try {
+        const result = await db.run('UPDATE produtos SET name = ?, description = ?, price = ?, category = ?, pictureUrl = ? WHERE id = ?', [name, description, price, category, pictureUrl, id]);
+        const produtoAtualizado = new Produto(result.id, result.name, result.description, result.price, result.category, pictureUrl)
+        reply.code(204).send(produtoAtualizado);
+    } catch (error) {
+        console.error(error);
+        reply.code(500).send({ error: 'Erro ao atualizar produto' })
+    }
+});
+
 fastify.put('/produtos/:id/picture', async (request,reply) => {
     const id = request.params.id;
     const {pictureUrl} = request.body;
