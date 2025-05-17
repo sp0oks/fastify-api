@@ -1,28 +1,14 @@
-// server.js
 const fastify = require('fastify')();
 const Database = require('./database');
 const Produto = require('./produto');
 
-// Initialize the database
 const db = new Database();
 
-// JSON Schema for Produto
+// JSON Schema
 const produtoSchema = {
     type: 'object',
     properties: {
         id: { type: 'integer' },
-        name: { type: 'string' },
-        description: { type: 'string' },
-        price: { type: 'number' },
-        category: { type: 'string' },
-        pictureUrl: { type: 'string' },
-    },
-};
-
-const produtoInputSchema = {
-    type: 'object',
-    required: ['name', 'price', 'category'],
-    properties: {
         name: { type: 'string' },
         description: { type: 'string' },
         price: { type: 'number' },
@@ -56,7 +42,7 @@ const getProdutosOpts = {
 
 const postProdutoOpts = {
     schema: {
-        body: produtoInputSchema,
+        body: produtoSchema,
         response: {
             201: produtoSchema,
             500: {
@@ -69,39 +55,51 @@ const postProdutoOpts = {
     },
 };
 
-// Fastify route to get all produtos
+
 fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
     try {
-        const produtosData = await db.getProducts();
+       // const produtosData = await db.getProducts();
+        const produtosData = await db.all('SELECT id, name, description, price, category, pictureUrl FROM produtos');
         const produtos = produtosData.map((data) => new Produto(data.id, data.name, data.description, data.price, data.category, data.pictureUrl));
         return produtos;
     } catch (error) {
         console.error(error);
-        reply.status(500).send({ error: 'Failed to fetch produtos' });
+        reply.status(500).send({ error: 'Erro ao requisitar produtos' });
     }
 });
 
-// Fastify route to add a new produto
 fastify.post('/produtos', postProdutoOpts, async (request, reply) => {
     const { name, description, price, category, pictureUrl } = request.body;
     try {
-        const result = await db.run(
-            'INSERT INTO produtos(name, description, price, category, pictureUrl) VALUES(?, ?, ?, ?, ?)',
-            [name, description, price, category, pictureUrl]
-        );
+        const result = await db.run('INSERT INTO produtos(name, description, price, category, pictureUrl) VALUES(?, ?, ?, ?, ?)',
+                [name, description, price, category, pictureUrl]
+            );
         const newProduto = new Produto(result.id, name, description, price, category, pictureUrl);
-        reply.status(201).send(newProduto);
+        reply.code(201).send(newProduto);
     } catch (error) {
         console.error(error);
-        reply.status(500).send({ error: 'Failed to add produto' });
+        reply.code(500).send({ error: 'Erro ao adicionar produto' });
     }
 });
 
-// Start the Fastify server
+fastify.put('/produtos/:id', async (request,reply) => {
+    const id = request.params.id;
+    const {pictureUrl} = request.body;
+    try {
+        const result = await db.run('UPDATE produtos SET pictureUrl = ? WHERE id = ?', [pictureUrl, id]);
+        const produtoAtualizado = new Produto(result.id, result.name, result.description, result.price, result.category, pictureUrl)
+        reply.code(200).send(produtoAtualizado);
+    } catch (error) {
+        console.error(error);
+        reply.code(500).send({ error: 'Erro ao atualizar produto' })
+    }
+});
+
 const start = async () => {
     try {
-        await fastify.listen({ port: 3000 });
-        console.log('Server listening on port 3000');
+        const port = 3000;
+        await fastify.listen({ port: port });
+        console.log('Escutando na porta:', port);
     } catch (err) {
         console.error(err);
         process.exit(1);
@@ -109,14 +107,13 @@ const start = async () => {
 };
 start();
 
-// Handle server shutdown
 process.on('SIGINT', async () => {
-    console.log('Closing database connection...');
+    console.log('Terminando conexão do servidor...');
     try {
         await db.close();
         process.exit(0);
     } catch (err) {
-        console.error('Error closing database:', err.message);
+        console.error('Erro ao terminar o banco:', err.message);
         process.exit(1);
     }
 });
