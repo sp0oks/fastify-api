@@ -82,7 +82,7 @@ fastify.post('/produtos', postProdutoOpts, async (request, reply) => {
     }
 });
 
-fastify.put('/produtos/:id', async (request,reply) => {
+fastify.put('/produtos/:id/picture', async (request,reply) => {
     const id = request.params.id;
     const {pictureUrl} = request.body;
     try {
@@ -92,6 +92,18 @@ fastify.put('/produtos/:id', async (request,reply) => {
     } catch (error) {
         console.error(error);
         reply.code(500).send({ error: 'Erro ao atualizar produto' })
+    }
+});
+
+fastify.delete('/produtos/:id' , async (request,reply) => {
+    const id = request.params.id;
+    try {
+        await db.run('DELETE FROM produtos WHERE id = ?', [id]);
+        const produtoDel = new Produto(id)
+        reply.code(200).send(produtoDel);
+    } catch (error) {
+        console.error(error);
+        reply.code(500).send({ error: 'Erro ao deletar produto' })
     }
 });
 
