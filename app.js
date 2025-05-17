@@ -59,7 +59,8 @@ lerProdutos()
         // Preparar os dados só com id e name
         const dadosParaSalvar = produtosFiltrados.map(p => ({
             id: p.id,
-            name: p.name
+            name: p.name,
+            category: p.category
         }));
 
         // Caminho para salvar o processed.json

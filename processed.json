@@ -1,66 +1,82 @@
 [
   {
     "id": "1",
-    "name": "Camiseta Básica"
+    "name": "Camiseta Básica",
+    "category": "Moda"
   },
   {
     "id": "2",
-    "name": "Smartphone X10"
+    "name": "Smartphone X10",
+    "category": "Eletronicos"
   },
   {
     "id": "5",
-    "name": "Sofá 3 Lugares"
+    "name": "Sofá 3 Lugares",
+    "category": "CasaDecoracao"
   },
   {
     "id": "6",
-    "name": "Creme Hidratante Facial"
+    "name": "Creme Hidratante Facial",
+    "category": "SaudeBeleza"
   },
   {
     "id": "7",
-    "name": "Bicicleta Mountain Bike"
+    "name": "Bicicleta Mountain Bike",
+    "category": "EsporteLazer"
   },
   {
     "id": "8",
-    "name": "Livro: A Arte da Guerra"
+    "name": "Livro: A Arte da Guerra",
+    "category": "Livros"
   },
   {
     "id": "9",
-    "name": "Caderno Universitário"
+    "name": "Caderno Universitário",
+    "category": "Papelaria"
   },
   {
     "id": "10",
-    "name": "Boneca de Pano"
+    "name": "Boneca de Pano",
+    "category": "Brinquedos"
   },
   {
     "id": "12",
-    "name": "Fone de Ouvido Bluetooth"
+    "name": "Fone de Ouvido Bluetooth",
+    "category": "Eletronicos"
   },
   {
     "id": "13",
-    "name": "Mesa de Escritório"
+    "name": "Mesa de Escritório",
+    "category": "CasaDecoracao"
   },
   {
     "id": "14",
-    "name": "Tênis Esportivo"
+    "name": "Tênis Esportivo",
+    "category": "EsporteLazer"
   },
   {
     "id": "16",
-    "name": "Jaqueta de Couro"
+    "name": "Jaqueta de Couro",
+    "category": "Moda"
   },
   {
     "id": "17",
-    "name": "Kit de Ferramentas"
+    "name": "Kit de Ferramentas",
+    "category": "CasaDecoracao"
   },
   {
     "id": "18",
-    "name": "Jogo de Panelas Antiaderentes"
+    "name": "Jogo de Panelas Antiaderentes",
+    "category": "CasaDecoracao"
   },
   {
     "id": "19",
-    "name": "Câmera Fotográfica Digital"
+    "name": "Câmera Fotográfica Digital",
+    "category": "Eletronicos"
   },
   {
     "id": "20",
-    "name": "Mochila Escolar"
+    "name": "Mochila Escolar",
+    "category": "Papelaria"
   }
 ]
