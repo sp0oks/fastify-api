@@ -2,9 +2,12 @@ const fastify = require('fastify')({ logger: true });
 const Database = require('./database');
 const Produto = require('./produto');
 const path = require('path');
-const fs = require('fs').promises;
+const fs = require('fs');
+const fsPromises = fs.promises;
+const multipart = require('@fastify/multipart');
 
 const db = new Database();
+
 
 // JSON Schema
 const produtoSchema = {
@@ -56,6 +59,9 @@ const postProdutoOpts = {
         },
     },
 };
+
+// Registre o plugin de multipart (caso ainda não tenha feito)
+fastify.register(multipart);
 
 fastify.addHook('onRequest', (request, reply, done) => {
     request.log.info(`${request.method} ${request.url} rota acessada.`);
@@ -116,14 +122,26 @@ fastify.put('/produtos/:id', async (request, reply) => {
 
 fastify.put('/produtos/:id/picture', async (request, reply) => {
     const id = request.params.id;
-    const { pictureUrl } = request.body;
+
     try {
-        const result = await db.run('UPDATE produtos SET pictureUrl = ? WHERE id = ?', [pictureUrl, id]);
-        const produtoAtualizado = new Produto(result.id, result.name, result.description, result.price, result.category, pictureUrl)
-        reply.code(200).send(produtoAtualizado);
+        const data = await request.file(); // recebe o arquivo da request
+        const extension = path.extname(data.filename); // .jpg, .png, etc.
+        const fileName = `${id}${extension}`; // usa o id como nome
+        const uploadDir = path.join(__dirname, 'img');
+        const filePath = path.join(uploadDir, fileName);
+
+        // Salva o arquivo
+        await new Promise((resolve, reject) => {
+            const writeStream = fs.createWriteStream(filePath);
+            data.file.pipe(writeStream);
+            writeStream.on('finish', resolve);
+            writeStream.on('error', reject);
+        });
+
+        reply.code(200).send({ message: 'Imagem salva com sucesso' });
     } catch (error) {
         console.error(error);
-        reply.code(500).send({ error: 'Erro ao atualizar produto' })
+        reply.code(500).send({ error: 'Erro ao salvar imagem' });
     }
 });
 
@@ -142,7 +160,7 @@ fastify.delete('/produtos/:id', async (request, reply) => {
 const carregarProdutosIniciais = async () => {
     try {
         const filePath = path.join(__dirname, 'processed.json');
-        const data = await fs.readFile(filePath, 'utf-8');
+        const data = await fsPromises.readFile(filePath, 'utf-8');
         const produtos = JSON.parse(data);
 
         for (const produto of produtos) {
