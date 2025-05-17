@@ -55,14 +55,12 @@ const postProdutoOpts = {
     },
 };
 
+fastify.addHook('onRequest', (request, reply, done) => {
+    request.log.info(`${request.method} ${request.url} rota acessada.`);
+    done();
+});
 
-fastify.get('/produtos', {
-    ...getProdutosOpts,
-    onRequest: (request, reply, done) => {
-        request.log.info(`${request.method} ${request.url} route accessed.`);
-        done();
-    }
-}, async (request, reply) => {
+fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
     try {
         // const produtosData = await db.getProducts();
         const produtosData = await db.all('SELECT id, name, description, price, category, pictureUrl FROM produtos');
@@ -74,13 +72,7 @@ fastify.get('/produtos', {
     }
 });
 
-fastify.post('/produtos', {
-    ...postProdutoOpts,
-    onRequest: (request, reply, done) => {
-        request.log.info(`${request.method} ${request.url} route accessed.`);
-        done();
-    }
-}, async (request, reply) => {
+fastify.post('/produtos', postProdutoOpts, async (request, reply) => {
     const { name, description, price, category, pictureUrl } = request.body;
     try {
         const result = await db.run('INSERT INTO produtos(name, description, price, category, pictureUrl) VALUES(?, ?, ?, ?, ?)',
@@ -94,12 +86,7 @@ fastify.post('/produtos', {
     }
 });
 
-fastify.put('/produtos/:id', {
-    onRequest: (request, reply, done) => {
-        request.log.info(`${request.method} ${request.url} route accessed.`);
-        done();
-    }
-}, async (request, reply) => {
+fastify.put('/produtos/:id', async (request, reply) => {
     const id = request.params.id;
     const { name, description, price, category, pictureUrl } = request.body;
     try {
@@ -112,12 +99,7 @@ fastify.put('/produtos/:id', {
     }
 });
 
-fastify.put('/produtos/:id/picture', {
-    onRequest: (request, reply, done) => {
-        request.log.info(`${request.method} ${request.url} route accessed.`);
-        done();
-    }
-}, async (request, reply) => {
+fastify.put('/produtos/:id/picture', async (request, reply) => {
     const id = request.params.id;
     const { pictureUrl } = request.body;
     try {
@@ -130,12 +112,7 @@ fastify.put('/produtos/:id/picture', {
     }
 });
 
-fastify.delete('/produtos/:id', {
-    onRequest: (request, reply, done) => {
-        request.log.info(`${request.method} ${request.url} route accessed.`);
-        done();
-    }
-}, async (request, reply) => {
+fastify.delete('/produtos/:id', async (request, reply) => {
     const id = request.params.id;
     try {
         await db.run('DELETE FROM produtos WHERE id = ?', [id]);
