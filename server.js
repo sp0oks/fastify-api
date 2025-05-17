@@ -72,6 +72,19 @@ fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
     }
 });
 
+// Fastify route to get specific product by id
+fastify.get('/produtos/:id', async (request, reply) => {
+    const id = request.params.id;
+    try {
+        const data = await db.all('SELECT id, name, description, price, category, pictureUrl FROM produtos WHERE id = ?', [id]);
+        const produto = new Produto(data[0].id, data[0].name, data[0].description, data[0].price, data[0].category, data[0].pictureUrl);
+        reply.code(200).send(produto);
+    } catch (error) {
+        console.error(error);
+        reply.code(500).send({ error: 'Erro ao requisitar produto' })
+    }
+});
+
 fastify.post('/produtos', postProdutoOpts, async (request, reply) => {
     const { name, description, price, category, pictureUrl } = request.body;
     try {
