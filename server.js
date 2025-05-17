@@ -1,7 +1,7 @@
 // server.js
 const fastify = require('fastify')();
-const Database = require('./src/database');
-const Produto = require('./src/produto');
+const Database = require('./database');
+const Produto = require('./produto');
 
 // Initialize the database
 const db = new Database();
@@ -11,18 +11,6 @@ const produtoSchema = {
     type: 'object',
     properties: {
         id: { type: 'integer' },
-        name: { type: 'string' },
-        description: { type: 'string' },
-        price: { type: 'number' },
-        category: { type: 'string' },
-        pictureUrl: { type: 'string' },
-    },
-};
-
-const produtoInputSchema = {
-    type: 'object',
-    required: ['name', 'price', 'category'],
-    properties: {
         name: { type: 'string' },
         description: { type: 'string' },
         price: { type: 'number' },
@@ -56,7 +44,7 @@ const getProdutosOpts = {
 
 const postProdutoOpts = {
     schema: {
-        body: produtoInputSchema,
+        body: produtoSchema,
         response: {
             201: produtoSchema,
             500: {
@@ -69,6 +57,8 @@ const postProdutoOpts = {
     },
 };
 
+
+
 // Fastify route to get all produtos
 fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
     try {
@@ -80,6 +70,20 @@ fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
         reply.status(500).send({ error: 'Failed to fetch produtos' });
     }
 });
+
+// Fastify route to get specific product by id
+fastify.get('/produtos/:id', async (request, reply) => {
+    const id = request.params.id;
+    try {
+        const data = await db.all('SELECT id, name, description, price, category, pictureUrl FROM produtos WHERE id = ?', [id]);
+        const produto = new Produto(data[0].id, data[0].name, data[0].description, data[0].price, data[0].category, data[0].pictureUrl);
+        reply.code(200).send(produto);
+    } catch (error) {
+        console.error(error);
+        reply.code(500).send({ error: 'Erro ao deletar produto' })
+    }
+});
+
 
 // Fastify route to add a new produto
 fastify.post('/produtos', postProdutoOpts, async (request, reply) => {
