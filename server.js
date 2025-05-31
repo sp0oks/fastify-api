@@ -162,32 +162,6 @@ fastify.delete('/produtos/:id', async (request, reply) => {
     }
 });
 
-const carregarProdutosIniciais = async () => {
-    try {
-        const filePath = path.join(__dirname, 'processed.json');
-        const data = await fsPromises.readFile(filePath, 'utf-8');
-        const produtos = JSON.parse(data);
-
-        for (const produto of produtos) {
-            const id = produto.id;
-            const name = produto.name;
-            const description = '';
-            const price = 0;
-            const category = produto.category;
-            const pictureUrl = '';
-
-            await db.run(
-                'INSERT OR IGNORE INTO produtos(id, name, description, price, category, pictureUrl) VALUES(?, ?, ?, ?, ?, ?)',
-                [id, name, description, price, category, pictureUrl]
-            );
-        }
-
-        console.log('Produtos iniciais carregados com sucesso.');
-    } catch (err) {
-        console.error('Erro ao carregar produtos iniciais:', err.message);
-    }
-};
-
 const start = async () => {
     try {
         const port = 3000;

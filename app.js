@@ -2,9 +2,6 @@ const fs = require('fs').promises;
 const path = require('path');
 const Produto = require('./produto');
 
-
-
-
 async function lerProdutos() {
     try {
         const filePath = path.join(__dirname, 'products.json');
@@ -64,7 +61,7 @@ lerProdutos()
         }));
 
         // Caminho para salvar o processed.json
-        const outputPath = path.join(__dirname, 'processed.json');
+        const outputPath = path.join(__dirname, 'seeds', 'processed.json');
 
         // Salvar o arquivo
         await fs.writeFile(outputPath, JSON.stringify(dadosParaSalvar, null, 2), 'utf-8');
