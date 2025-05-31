@@ -1,0 +1,16 @@
+services:
+  db:
+    image: kartoza/postgis:17-3.5
+    container_name: db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASS=admin
+    volumes:
+      - db_storage:/var/lib/postgresql
+
+volumes:
+  db_storage:
+    driver: local
+

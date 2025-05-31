@@ -1,13 +1,12 @@
 const fastify = require('fastify')({ logger: true });
-const Database = require('./database');
+const database = require('./database');
 const Produto = require('./produto');
 const path = require('path');
 const fs = require('fs');
 const fsPromises = fs.promises;
 const multipart = require('@fastify/multipart');
 
-const db = new Database();
-
+const db = new database.Database();
 
 // JSON Schema
 const produtoSchema = {
@@ -70,23 +69,29 @@ fastify.addHook('onRequest', (request, reply, done) => {
 
 fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
     try {
-        // const produtosData = await db.getProducts();
-        const produtosData = await db.all();
-        const produtos = produtosData.map((data) => new Produto(data.id, data.name, data.description, data.price, data.category, data.pictureUrl));
-        return produtos;
+        const produtosData = await db.all('produtos');
+        if (length(produtosData) > 0) {
+            const produtos = produtosData.map((data) => new Produto(data.id, data.name, data.description, data.price, data.category, data.pictureUrl));
+            reply.code(200).send(produtos);
+        } else {
+            reply.code(204);
+        }
     } catch (error) {
         console.error(error);
         reply.status(500).send({ error: 'Erro ao requisitar produtos' });
     }
 });
 
-// Fastify route to get specific product by id
 fastify.get('/produtos/:id', async (request, reply) => {
     const id = request.params.id;
     try {
-        const data = await db.all('SELECT id, name, description, price, category, pictureUrl FROM produtos WHERE id = ?', [id]);
-        const produto = new Produto(data[0].id, data[0].name, data[0].description, data[0].price, data[0].category, data[0].pictureUrl);
-        reply.code(200).send(produto);
+        const data = await db.get_one('produtos', id);
+        if (data) {
+            const produto = new Produto(data[0].id, data[0].name, data[0].description, data[0].price, data[0].category, data[0].pictureUrl);
+            reply.code(200).send(produto);
+        } else {
+            reply.code(404).send({ result: 'Produto não encontrado' })
+        }
     } catch (error) {
         console.error(error);
         reply.code(500).send({ error: 'Erro ao requisitar produto' })
@@ -186,6 +191,7 @@ const carregarProdutosIniciais = async () => {
 const start = async () => {
     try {
         const port = 3000;
+        await database.createDB();
         await fastify.listen({ port: port });
         console.log('Escutando na porta:', port);
     } catch (err) {

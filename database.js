@@ -1,17 +1,59 @@
 const knex = require('knex');
 const knexfile = require('./knexfile.js');
 
+async function createDB() {
+    const db = knex({
+        client: knexfile.development.client,
+        connection: {
+            ...knexfile.development.connection, 
+            password: knexfile.development.connection.password, 
+            database: null
+        }
+    });
+
+    try {
+        console.log('Iniciando banco de dados...')
+        dbExists = await db('pg_database').select('datname').where('datname', knexfile.development.connection.database);
+        if (!dbExists) {
+            await db.raw(`CREATE DATABASE "${knexfile.development.connection.database}"`);
+        }
+        console.log('Banco de dados iniciado.');
+    } catch(error) {
+        console.error('Erro ao iniciar banco de dados:', error);
+    } finally {
+        await db.destroy();
+    }
+}
+
 class Database {
     constructor() {
         this.db = knex(knexfile.development);
     }
 
-    async all() {
-        return await this.db.select('*').from('produtos')
-            .catch((err) => {
-                console.error('Erro ao buscar todos os produtos:', err.message);
-                throw err;
-            });
+    async all(table) {
+        let result = [];
+        try {
+            result = await this.db.select("*").from(table);
+        } catch(error) {
+            console.error('Erro na query:', error);
+            throw error;
+        } finally {
+            console.log('Query executada com sucesso.');
+        }
+        return result;
+    }
+
+    async get_one(table, id) {
+        let result = undefined;
+        try {
+            result = await this.db.select('*').from(table).where('id', id).first();
+        } catch(error) {
+            console.error('Erro na query:', error);
+            throw error;
+        } finally {
+            console.log('Query executada com sucesso.');
+        }
+        return result
     }
 
     run(sql, params = []) {
@@ -38,4 +80,7 @@ class Database {
     }
 }
 
-module.exports = Database;
+module.exports = {
+    createDB, 
+    Database,
+};

@@ -1,5 +1,3 @@
-const { table } = require("console");
-
 module.exports = {
     development: {
         client: 'pg',
@@ -8,7 +6,7 @@ module.exports = {
             port: 5432,
             user: 'postgres',
             password: 'admin',
-            database: 'postgres'
+            database: 'api_produtos'
         },
         migrations: {
             directory: './migrations',
