@@ -1,81 +1,81 @@
 [
   {
-    "id": "1",
+    "externalId": "1",
     "name": "Camiseta Básica",
     "category": "Moda"
   },
   {
-    "id": "2",
+    "externalId": "2",
     "name": "Smartphone X10",
     "category": "Eletronicos"
   },
   {
-    "id": "5",
+    "externalId": "5",
     "name": "Sofá 3 Lugares",
     "category": "CasaDecoracao"
   },
   {
-    "id": "6",
-    "name": "Creme Hidratante Facial",
+    "externalId": "6",
+    "name": "Creme HexternalIdratante Facial",
     "category": "SaudeBeleza"
   },
   {
-    "id": "7",
+    "externalId": "7",
     "name": "Bicicleta Mountain Bike",
     "category": "EsporteLazer"
   },
   {
-    "id": "8",
+    "externalId": "8",
     "name": "Livro: A Arte da Guerra",
     "category": "Livros"
   },
   {
-    "id": "9",
+    "externalId": "9",
     "name": "Caderno Universitário",
     "category": "Papelaria"
   },
   {
-    "id": "10",
+    "externalId": "10",
     "name": "Boneca de Pano",
     "category": "Brinquedos"
   },
   {
-    "id": "12",
-    "name": "Fone de Ouvido Bluetooth",
+    "externalId": "12",
+    "name": "Fone de OuvexternalIdo Bluetooth",
     "category": "Eletronicos"
   },
   {
-    "id": "13",
+    "externalId": "13",
     "name": "Mesa de Escritório",
     "category": "CasaDecoracao"
   },
   {
-    "id": "14",
+    "externalId": "14",
     "name": "Tênis Esportivo",
     "category": "EsporteLazer"
   },
   {
-    "id": "16",
+    "externalId": "16",
     "name": "Jaqueta de Couro",
     "category": "Moda"
   },
   {
-    "id": "17",
+    "externalId": "17",
     "name": "Kit de Ferramentas",
     "category": "CasaDecoracao"
   },
   {
-    "id": "18",
+    "externalId": "18",
     "name": "Jogo de Panelas Antiaderentes",
     "category": "CasaDecoracao"
   },
   {
-    "id": "19",
+    "externalId": "19",
     "name": "Câmera Fotográfica Digital",
     "category": "Eletronicos"
   },
   {
-    "id": "20",
+    "externalId": "20",
     "name": "Mochila Escolar",
     "category": "Papelaria"
   }

@@ -65,13 +65,13 @@ class Database {
                 }
                 await trx.commit();
                 console.log('Item adicionado com sucesso.')
+                return params
             } catch(error) {
                 await trx.rollback();
                 console.error('Erro ao adicionar item no banco', error)
                 throw error;
             }
         })
-        return params
     }
 
     async update_one(table, params) {

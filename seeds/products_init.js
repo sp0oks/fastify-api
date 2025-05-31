@@ -17,7 +17,7 @@ exports.seed = async function (knex) {
       const data = await fsPromises.readFile(filePath, 'utf-8');
       const produtos = JSON.parse(data);
       await trx('produtos').insert(produtos.map(produto => ({
-        id: produto.id,
+        externalId: produto.externalId,
         name: produto.name,
         description: '',
         price: 0,

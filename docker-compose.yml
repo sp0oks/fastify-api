@@ -8,9 +8,5 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASS=admin
     volumes:
-      - db_storage:/var/lib/postgresql
-
-volumes:
-  db_storage:
-    driver: local
+      - ./data:/var/lib/postgresql
 
