@@ -14,7 +14,9 @@ async function createDB() {
     try {
         console.log('Iniciando banco de dados...')
         dbExists = await db('pg_database').select('datname').where('datname', knexfile.development.connection.database);
-        if (!dbExists) {
+        console.log('Verificando se o banco de dados existe...' + JSON.stringify(dbExists));
+        if (dbExists.length == 0) {
+            console.log('Banco de dados não existe, criando...');
             await db.raw(`CREATE DATABASE "${knexfile.development.connection.database}"`);
         }
         console.log('Banco de dados iniciado.');
@@ -53,7 +55,7 @@ class Database {
         } finally {
             console.log('Query executada com sucesso.');
         }
-        return result
+        return result;
     }
 
     run(sql, params = []) {

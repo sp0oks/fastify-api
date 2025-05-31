@@ -70,7 +70,7 @@ fastify.addHook('onRequest', (request, reply, done) => {
 fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
     try {
         const produtosData = await db.all('produtos');
-        if (length(produtosData) > 0) {
+        if (produtosData.length > 0) {
             const produtos = produtosData.map((data) => new Produto(data.id, data.name, data.description, data.price, data.category, data.pictureUrl));
             reply.code(200).send(produtos);
         } else {
@@ -87,7 +87,7 @@ fastify.get('/produtos/:id', async (request, reply) => {
     try {
         const data = await db.get_one('produtos', id);
         if (data) {
-            const produto = new Produto(data[0].id, data[0].name, data[0].description, data[0].price, data[0].category, data[0].pictureUrl);
+            const produto = new Produto(data.id, data.name, data.description, data.price, data.category, data.pictureUrl);
             reply.code(200).send(produto);
         } else {
             reply.code(404).send({ result: 'Produto não encontrado' })
