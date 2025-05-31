@@ -14,7 +14,7 @@ async function createDB() {
     try {
         console.log('Iniciando banco de dados...')
         dbExists = await db('pg_database').select('datname').where('datname', knexfile.development.connection.database);
-        console.log('Verificando se o banco de dados existe...' + JSON.stringify(dbExists));
+        console.log('Verificando se o banco de dados existe...');
         if (dbExists.length == 0) {
             console.log('Banco de dados não existe, criando...');
             await db.raw(`CREATE DATABASE "${knexfile.development.connection.database}"`);
@@ -65,13 +65,13 @@ class Database {
                 }
                 await trx.commit();
                 console.log('Item adicionado com sucesso.')
-                return params
             } catch(error) {
                 await trx.rollback();
                 console.error('Erro ao adicionar item no banco', error)
                 throw error;
             }
         })
+        return params;
     }
 
     async update_one(table, params) {

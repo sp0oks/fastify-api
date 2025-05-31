@@ -1,81 +1,65 @@
 [
   {
-    "externalId": "1",
     "name": "Camiseta Básica",
     "category": "Moda"
   },
   {
-    "externalId": "2",
     "name": "Smartphone X10",
     "category": "Eletronicos"
   },
   {
-    "externalId": "5",
     "name": "Sofá 3 Lugares",
     "category": "CasaDecoracao"
   },
   {
-    "externalId": "6",
-    "name": "Creme HexternalIdratante Facial",
+    "name": "Creme Hidratante Facial",
     "category": "SaudeBeleza"
   },
   {
-    "externalId": "7",
     "name": "Bicicleta Mountain Bike",
     "category": "EsporteLazer"
   },
   {
-    "externalId": "8",
     "name": "Livro: A Arte da Guerra",
     "category": "Livros"
   },
   {
-    "externalId": "9",
     "name": "Caderno Universitário",
     "category": "Papelaria"
   },
   {
-    "externalId": "10",
     "name": "Boneca de Pano",
     "category": "Brinquedos"
   },
   {
-    "externalId": "12",
-    "name": "Fone de OuvexternalIdo Bluetooth",
+    "name": "Fone de Ouvido Bluetooth",
     "category": "Eletronicos"
   },
   {
-    "externalId": "13",
     "name": "Mesa de Escritório",
     "category": "CasaDecoracao"
   },
   {
-    "externalId": "14",
     "name": "Tênis Esportivo",
     "category": "EsporteLazer"
   },
   {
-    "externalId": "16",
     "name": "Jaqueta de Couro",
     "category": "Moda"
   },
   {
-    "externalId": "17",
     "name": "Kit de Ferramentas",
     "category": "CasaDecoracao"
   },
   {
-    "externalId": "18",
     "name": "Jogo de Panelas Antiaderentes",
     "category": "CasaDecoracao"
   },
   {
-    "externalId": "19",
     "name": "Câmera Fotográfica Digital",
     "category": "Eletronicos"
   },
   {
-    "externalId": "20",
     "name": "Mochila Escolar",
     "category": "Papelaria"
   }

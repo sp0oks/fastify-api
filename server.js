@@ -106,7 +106,7 @@ fastify.post('/produtos', postProdutoOpts, async (request, reply) => {
             "description": description, 
             "price": price, 
             "category": category, 
-            "pictureUrl": pictureUrl
+            "pictureUrl": pictureUrl,
         });
         const newProduto = new Produto(result.id, name, description, price, category, pictureUrl);
         reply.code(201).send(newProduto);
@@ -126,7 +126,7 @@ fastify.put('/produtos/:id', async (request, reply) => {
             "description": description, 
             "price": price, 
             "category": category, 
-            "pictureUrl": pictureUrl
+            "pictureUrl": pictureUrl,
         });        
         const produtoAtualizado = new Produto(result.id, result.name, result.description, result.price, result.category, result.pictureUrl)
         reply.code(200).send(produtoAtualizado);
