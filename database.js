@@ -36,11 +36,10 @@ class Database {
         let result = [];
         try {
             result = await this.db.select("*").from(table);
+            console.log('Query executada com sucesso.');
         } catch(error) {
             console.error('Erro na query:', error);
             throw error;
-        } finally {
-            console.log('Query executada com sucesso.');
         }
         return result;
     }
@@ -49,26 +48,69 @@ class Database {
         let result = undefined;
         try {
             result = await this.db.select('*').from(table).where('id', id).first();
-        } catch(error) {
-            console.error('Erro na query:', error);
-            throw error;
-        } finally {
             console.log('Query executada com sucesso.');
+        } catch(error) {
+            console.error('Erro ao selecionar item:', error);
+            throw error;
         }
         return result;
     }
 
-    run(sql, params = []) {
-        return new Promise((resolve, reject) => {
-            this.db.run(sql, params, function (err) {
-                if (err) {
-                    console.error('Erro ao rodar query SQL:', sql, err.message);
-                    reject(err);
-                    return;
+    async add_one(table, params) {
+        await this.db.transaction(async (trx) => {
+            try {
+                let result = await trx(table).insert(params, ['id']);
+                if (result.length > 0) {
+                    params.id = result[0].id;
                 }
-                resolve({ id: this.lastID, changes: this.changes });
-            });
-        });
+                await trx.commit();
+                console.log('Item adicionado com sucesso.')
+            } catch(error) {
+                await trx.rollback();
+                console.error('Erro ao adicionar item no banco', error)
+                throw error;
+            }
+        })
+        return params
+    }
+
+    async update_one(table, params) {
+        let result;
+        await this.db.transaction(async (trx) => {
+            try {
+                // não remove campos que não foram passados
+                let toChange = params
+                Object.keys(toChange).forEach(key => {
+                    if (toChange[key] === undefined) {
+                        delete toChange[key];
+                    }
+                });
+
+                await trx(table).where('id', params.id).update({...toChange})
+                await trx.commit();
+                console.log('Item adicionado com sucesso.')
+            } catch(error) {
+                await trx.rollback();
+                console.error('Erro ao adicionar item no banco', error)
+                throw error;
+            }
+        })
+        result = await this.get_one(table, params.id)
+        return result;
+    }
+
+    async delete_one(table, id) {
+        await this.db.transaction(async (trx) => {
+            try {
+                await trx(table).where('id', id).del();
+                await trx.commit();
+                console.log('Item deletado com sucesso.')
+            } catch(error) {
+                await trx.rollback();
+                console.error('Erro ao adicionar item no banco', error)
+                throw error;
+            }
+        })
     }
 
     async close() {

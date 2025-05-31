@@ -101,9 +101,13 @@ fastify.get('/produtos/:id', async (request, reply) => {
 fastify.post('/produtos', postProdutoOpts, async (request, reply) => {
     const { name, description, price, category, pictureUrl } = request.body;
     try {
-        const result = await db.run('INSERT INTO produtos(name, description, price, category, pictureUrl) VALUES(?, ?, ?, ?, ?)',
-            [name, description, price, category, pictureUrl]
-        );
+        const result = await db.add_one('produtos', {
+            "name": name, 
+            "description": description, 
+            "price": price, 
+            "category": category, 
+            "pictureUrl": pictureUrl
+        });
         const newProduto = new Produto(result.id, name, description, price, category, pictureUrl);
         reply.code(201).send(newProduto);
     } catch (error) {
@@ -116,9 +120,16 @@ fastify.put('/produtos/:id', async (request, reply) => {
     const id = request.params.id;
     const { name, description, price, category, pictureUrl } = request.body;
     try {
-        const result = await db.run('UPDATE produtos SET name = ?, description = ?, price = ?, category = ?, pictureUrl = ? WHERE id = ?', [name, description, price, category, pictureUrl, id]);
-        const produtoAtualizado = new Produto(result.id, result.name, result.description, result.price, result.category, pictureUrl)
-        reply.code(204).send(produtoAtualizado);
+        const result = await db.update_one('produtos', {
+            "id": id,
+            "name": name, 
+            "description": description, 
+            "price": price, 
+            "category": category, 
+            "pictureUrl": pictureUrl
+        });        
+        const produtoAtualizado = new Produto(result.id, result.name, result.description, result.price, result.category, result.pictureUrl)
+        reply.code(200).send(produtoAtualizado);
     } catch (error) {
         console.error(error);
         reply.code(500).send({ error: 'Erro ao atualizar produto' })
@@ -143,6 +154,8 @@ fastify.put('/produtos/:id/picture', async (request, reply) => {
             writeStream.on('error', reject);
         });
 
+        await db.update_one('produtos', {"id": id, "pictureUrl": filePath});
+        
         reply.code(200).send({ message: 'Imagem salva com sucesso' });
     } catch (error) {
         console.error(error);
@@ -153,9 +166,8 @@ fastify.put('/produtos/:id/picture', async (request, reply) => {
 fastify.delete('/produtos/:id', async (request, reply) => {
     const id = request.params.id;
     try {
-        await db.run('DELETE FROM produtos WHERE id = ?', [id]);
-        const produtoDel = new Produto(id)
-        reply.code(200).send(produtoDel);
+        await db.delete_one('produtos', id)
+        reply.code(200).send({ "id": id });
     } catch (error) {
         console.error(error);
         reply.code(500).send({ error: 'Erro ao deletar produto' })
