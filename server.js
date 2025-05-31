@@ -186,7 +186,7 @@ const carregarProdutosIniciais = async () => {
 const start = async () => {
     try {
         const port = 3000;
-        await carregarProdutosIniciais();
+        await db.createTables();
         await fastify.listen({ port: port });
         console.log('Escutando na porta:', port);
     } catch (err) {
