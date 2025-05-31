@@ -71,7 +71,7 @@ fastify.addHook('onRequest', (request, reply, done) => {
 fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
     try {
         // const produtosData = await db.getProducts();
-        const produtosData = await db.all('SELECT id, name, description, price, category, pictureUrl FROM produtos');
+        const produtosData = await db.all();
         const produtos = produtosData.map((data) => new Produto(data.id, data.name, data.description, data.price, data.category, data.pictureUrl));
         return produtos;
     } catch (error) {
@@ -186,7 +186,6 @@ const carregarProdutosIniciais = async () => {
 const start = async () => {
     try {
         const port = 3000;
-        await db.createTables();
         await fastify.listen({ port: port });
         console.log('Escutando na porta:', port);
     } catch (err) {

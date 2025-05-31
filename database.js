@@ -1,40 +1,17 @@
 const knex = require('knex');
-const knexfile = require('./knexfile.js'); // Adjust the path as necessary
+const knexfile = require('./knexfile.js');
 
 class Database {
     constructor() {
         this.db = knex(knexfile.development);
     }
 
-    async createTables() {
-        console.log('Criando tabelas no banco de dados...');
-        if (!(await this.db.schema.hasTable('produtos'))) {
-            console.log('Tabela produtos não existe, criando...');
-            await this.db.schema.createTableIfNotExists('produtos', (table) => {
-                table.increments('id').primary();
-                table.string('name').notNullable();
-                table.string('description');
-                table.decimal('price', 10, 2).notNullable();
-                table.string('category');
-                table.string('pictureUrl');
-            }).catch((err) => {
-                console.error('Erro ao criar tabela produtos:', err.message);
+    async all() {
+        return await this.db.select('*').from('produtos')
+            .catch((err) => {
+                console.error('Erro ao buscar todos os produtos:', err.message);
+                throw err;
             });
-            console.log('Tabela produtos criada com sucesso.');
-        }
-    }
-
-    all(sql, params = []) {
-        return new Promise((resolve, reject) => {
-            this.db.all(sql, params, (err, rows) => {
-                if (err) {
-                    console.error('Erro ao rodar query SQL:', sql, err.message);
-                    reject(err);
-                    return;
-                }
-                resolve(rows);
-            });
-        });
     }
 
     run(sql, params = []) {
