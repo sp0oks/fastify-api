@@ -13,14 +13,14 @@ exports.seed = async function (knex) {
       await trx('produtos').del();
       console.log('Tabela produtos limpa com sucesso.');
       console.log('Inserindo dados iniciais na tabela produtos...');
-      const filePath = path.join(__dirname, 'processed.json');
+      const filePath = path.join(__dirname, 'products.json');
       const data = await fsPromises.readFile(filePath, 'utf-8');
       const produtos = JSON.parse(data);
       await trx('produtos').insert(produtos.map(produto => ({
         id: produto.id,
         name: produto.name,
-        description: '',
-        price: 0,
+        description: produto.description,
+        price: produto.price,
         category: produto.category,
         pictureUrl: ''
       })));
