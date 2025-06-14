@@ -1,6 +1,7 @@
 
 const fp = require('fastify-plugin')
 const fs = require('fs');
+const path = require('path');
 
 const Produto = require('./produto');
 
@@ -179,6 +180,7 @@ module.exports = fp(async function (fastify, opts) {
                 { expiresIn: '15min' }
             );
             reply.code(200).send({ token: token });
+            return;
         } else if (username === "admin" && password === "admin") {
             const token = fastify.jwt.sign(
                 {
@@ -189,6 +191,7 @@ module.exports = fp(async function (fastify, opts) {
                 { expiresIn: '15min' }
             );
             reply.code(200).send({ token: token });
+            return;
         }
 
         // não autorizado
