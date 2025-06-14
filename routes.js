@@ -59,7 +59,7 @@ const postProdutoOpts = {
 module.exports = fp(async function (fastify, opts) {
     const db = opts.dbInstance;
     
-    fastify.get('/produtos', { preHandler: [fastify.authenticate, fastify.requirePermission('products:read')], getProdutosOpts }, async (request, reply) => {
+    fastify.get('/produtos', getProdutosOpts, async (request, reply) => {
         try {
             const produtosData = await db.all('produtos');
             if (produtosData.length > 0) {
@@ -74,7 +74,7 @@ module.exports = fp(async function (fastify, opts) {
         }
     });
 
-    fastify.get('/produtos/:id', { preHandler: [fastify.authenticate, fastify.requirePermission('products:read')] }, async (request, reply) => {
+    fastify.get('/produtos/:id', async (request, reply) => {
         const id = request.params.id;
         try {
             const data = await db.get_one('produtos', id);
@@ -168,14 +168,13 @@ module.exports = fp(async function (fastify, opts) {
 
     fastify.post('/login', async (request, reply) => {
         const { username, password } = request.body;
-
         // validação de usuario
-        if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+        if (username === process.env.LOGIN && password === process.env.PASSWORD) {
             const token = fastify.jwt.sign(
                 {
                     id: 1,
                     username: username,
-                    permissions: ['products:read']
+                    permissions: []
                 },
                 { expiresIn: '15min' }
             );
@@ -186,7 +185,7 @@ module.exports = fp(async function (fastify, opts) {
                 {
                     id: 99,
                     username: username,
-                    permissions: ['products:read', 'products:create', 'products:delete', 'products:update']
+                    permissions: ['products:create', 'products:delete', 'products:update']
                 },
                 { expiresIn: '15min' }
             );
