@@ -9,3 +9,5 @@ para rodar o seed antes de iniciar o servidor: `npx knex seed:run`
 para iniciar o servidor: `npm start`
 
 para rodar os testes: `npm test`
+
+para avaliar cobertura do código: `npm test -- --coverage`

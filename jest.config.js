@@ -30,9 +30,9 @@ module.exports = {
   ],
 */
   collectCoverageFrom: [
-    "src/**/*.ts",
-    "!src/**/*.d.ts",
-    "!src/**/*.test.ts"
+    "*.js",
+    "!src/*.d.ts",
+    "!src/*.test.ts"
   ],
 
   coverageThreshold: {

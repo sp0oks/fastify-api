@@ -1,22 +1,48 @@
 import Fastify from 'fastify';
 import routes from '../routes';
 import auth from '../auth';
+import jwt from '@fastify/jwt';
+import 'dotenv/config';
 
 describe('Routes', () => {
   let fastify;
+  let token: string;
+  const mockDb = {
+    all: jest.fn().mockResolvedValue([
+      { id: '1', name: 'Produto 1', description: '', price: 10, category: 'A', pictureUrl: '' }
+    ]),
+    get_one: jest.fn().mockResolvedValue(
+      { id: '1', name: 'Produto 1', description: '', price: 10, category: 'A', pictureUrl: '' }
+    ),
+    add_one: jest.fn().mockResolvedValue({ id: '2' }),
+    update_one: jest.fn().mockResolvedValue({ id: '1' }),
+    delete_one: jest.fn().mockResolvedValue({ id: '1' })
+  };
 
   beforeAll(async () => {
     fastify = Fastify();
+    fastify.register(jwt, { secret: process.env.JWT_SECRET });
     fastify.register(auth);
-    fastify.register(routes);
+    fastify.register(routes, { dbInstance: mockDb });
     await fastify.ready();
+
+    const loginResponse = await fastify.inject({
+      method: 'POST',
+      url: '/login',
+      payload: {
+        "username": "admin",
+        "password": "admin"
+      }
+    });
+    const body = JSON.parse(loginResponse.body);
+    token = body.token;
   });
 
   afterAll(async () => {
     await fastify.close();
   });
 
-  it('should return 403 on GET /produtos', async () => {
+  it('should return 403 when token is not provided on GET /produtos', async () => {
     const response = await fastify.inject({
       method: 'GET',
       url: '/produtos',
@@ -24,7 +50,7 @@ describe('Routes', () => {
     expect(response.statusCode).toBe(403);
   });
 
-  it('should return 403 on GET /produtos/1', async () => {
+  it('should return 403 when token is not provided on GET /produtos/1', async () => {
     const response = await fastify.inject({
       method: 'GET',
       url: '/produtos/1',
@@ -32,7 +58,7 @@ describe('Routes', () => {
     expect(response.statusCode).toBe(403);
   });
 
-  it('should return 403 on POST /produtos', async () => {
+  it('should return 403 when token is not provided on POST /produtos', async () => {
     const response = await fastify.inject({
       method: 'POST',
       url: '/produtos',
@@ -48,7 +74,7 @@ describe('Routes', () => {
     expect(response.statusCode).toBe(403);
   });
 
-  it('should return 403 on PUT /produtos/1', async () => {
+  it('should return 403 when token is not provided on PUT /produtos/1', async () => {
     const response = await fastify.inject({
       method: 'PUT',
       url: '/produtos/1',
@@ -64,7 +90,7 @@ describe('Routes', () => {
     expect(response.statusCode).toBe(403);
   });
 
-  it('should return 403 on PUT /produtos/1/picture', async () => {
+  it('should return 403 when token is not provided on PUT /produtos/1/picture', async () => {
     const response = await fastify.inject({
       method: 'PUT',
       url: '/produtos/1/picture',
@@ -75,12 +101,84 @@ describe('Routes', () => {
     expect(response.statusCode).toBe(403);
   });
 
-  it('should return 403 on DELETE /produtos/1', async () => {
+  it('should return 403 when token is not provided on DELETE /produtos/1', async () => {
     const response = await fastify.inject({
       method: 'DELETE',
       url: '/produtos/1',
     });
     expect(response.statusCode).toBe(403);
+  });
+
+  it('should return 200 when token is valid on GET /produtos', async () => {
+    console.log('Token:', token); // Log the token for debugging
+    const response = await fastify.inject({
+      method: 'GET',
+      url: '/produtos',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('should return 200 when token is valid on GET /produtos/1', async () => {
+    const response = await fastify.inject({
+      method: 'GET',
+      url: '/produtos/1',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('should return 201 when token is valid on POST /produtos', async () => {
+    const response = await fastify.inject({
+      method: 'POST',
+      url: '/produtos',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      payload: {
+        id: '2',
+        name: 'Novo Produto',
+        description: 'Descrição',
+        price: 100,
+        category: 'Categoria',
+        pictureUrl: 'http://example.com/image.jpg',
+      },
+    });
+    expect(response.statusCode).toBe(201);
+  });
+
+  it('should return 200 when token is valid on PUT /produtos/1', async () => {
+    const response = await fastify.inject({
+      method: 'PUT',
+      url: '/produtos/1',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      payload: {
+        id: '1',
+        name: 'Produto Atualizado',
+        description: 'Descrição Atualizada',
+        price: 150,
+        category: 'Categoria Atualizada',
+        pictureUrl: 'http://example.com/updated-image.jpg',
+      },
+    });
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('should return 200 when token is valid on DELETE /produtos/1', async () => {
+    const response = await fastify.inject({
+      method: 'DELETE',
+      url: '/produtos/1',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    expect(response.statusCode).toBe(200);
   });
 
 });
