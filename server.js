@@ -11,7 +11,7 @@ require('dotenv').config();
 const db = new database.Database();
 
 fastify.register(multipart);
-fastify.register(jwt, { 
+fastify.register(jwt, {
     secret: process.env.JWT_SECRET,
     sign: { expiresIn: '15min' }
 });
