@@ -184,7 +184,7 @@ module.exports = fp(async function (fastify, opts) {
         } else if (username === "admin" && password === "admin") {
             const token = fastify.jwt.sign(
                 {
-                    id: 1,
+                    id: 99,
                     username: username,
                     permissions: ['products:read', 'products:create', 'products:delete', 'products:update']
                 },
