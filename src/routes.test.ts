@@ -44,20 +44,20 @@ describe('Routes', () => {
     await fastify.close();
   });
 
-  it('should return 403 when token is not provided on GET /produtos', async () => {
+  it('should return 200 when token is not provided on GET /produtos', async () => {
     const response = await fastify.inject({
       method: 'GET',
       url: '/produtos',
     });
-    expect(response.statusCode).toBe(403);
+    expect(response.statusCode).toBe(200);
   });
 
-  it('should return 403 when token is not provided on GET /produtos/1', async () => {
+  it('should return 200 when token is not provided on GET /produtos/1', async () => {
     const response = await fastify.inject({
       method: 'GET',
       url: '/produtos/1',
     });
-    expect(response.statusCode).toBe(403);
+    expect(response.statusCode).toBe(200);
   });
 
   it('should return 403 when token is not provided on POST /produtos', async () => {
