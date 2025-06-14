@@ -1,6 +1,7 @@
 
 const fp = require('fastify-plugin')
 const fs = require('fs');
+const path = require('path');
 
 const Produto = require('./produto');
 
@@ -134,7 +135,7 @@ module.exports = fp(async function (fastify, opts) {
             const data = await request.file(); // recebe o arquivo da request
             const extension = path.extname(data.filename); // .jpg, .png, etc.
             const fileName = `${id}${extension}`; // usa o id como nome
-            const uploadDir = path.join(__dirname, 'img');
+            const uploadDir = path.join(__dirname, 'images');
             const filePath = path.join(uploadDir, fileName);
 
             // Salva o arquivo

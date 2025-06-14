@@ -1,5 +1,4 @@
 const fastify = require('fastify')({ logger: true });
-const path = require('path');
 const multipart = require('@fastify/multipart');
 const jwt = require("@fastify/jwt")
 
