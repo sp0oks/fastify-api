@@ -9,7 +9,9 @@ describe('Routes', () => {
   let token: string;
   const mockDb = {
     all: jest.fn().mockResolvedValue([
-      { id: '1', name: 'Produto 1', description: '', price: 10, category: 'A', pictureUrl: '' }
+      { id: '1', name: 'Produto 1', description: '', price: 10, category: 'A', pictureUrl: '' },
+      { id: '2', name: 'Produto 2', description: '', price: 20, category: 'B', pictureUrl: '' },
+      { id: '3', name: 'Produto 3', description: '', price: 30, category: 'C', pictureUrl: '' }
     ]),
     get_one: jest.fn().mockResolvedValue(
       { id: '1', name: 'Produto 1', description: '', price: 10, category: 'A', pictureUrl: '' }
@@ -110,7 +112,6 @@ describe('Routes', () => {
   });
 
   it('should return 200 when token is valid on GET /produtos', async () => {
-    console.log('Token:', token); // Log the token for debugging
     const response = await fastify.inject({
       method: 'GET',
       url: '/produtos',
